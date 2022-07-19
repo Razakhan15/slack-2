@@ -1,10 +1,25 @@
-import { Add, Apps, BookmarkBorder, Drafts, ExpandLess, ExpandMore, FiberManualRecord, FileCopy, Inbox, InsertComment, PeopleAlt } from "@mui/icons-material";
+import {
+  Add,
+  Apps,
+  BookmarkBorder,
+  Drafts,
+  ExpandLess,
+  ExpandMore,
+  FiberManualRecord,
+  FileCopy,
+  Inbox,
+  InsertComment,
+  PeopleAlt,
+} from "@mui/icons-material";
 import React from "react";
 import styled from "styled-components";
 import CreateIcon from "@mui/icons-material/Create";
+import { useCollection } from "react-firebase-hooks/firestore";
 import SidebarOption from "./SidebarOption";
+import db from "./firebase";
 
 function Sidebar() {
+  const [channels, loading, error] = useCollection(db.collection("rooms"));
   return (
     <SidebarContainer>
       <SidebarHeader>
@@ -17,18 +32,25 @@ function Sidebar() {
         </SidebarInfo>
         <CreateIcon />
       </SidebarHeader>
-      <SidebarOption Icon={InsertComment} title="Threads"/>
-      <SidebarOption Icon={Inbox} title="Mentions & reactions"/>
-      <SidebarOption Icon={Drafts} title="Saved items"/>
-      <SidebarOption Icon={BookmarkBorder} title="Channel browser"/>
-      <SidebarOption Icon={PeopleAlt} title="People & user groups"/>
-      <SidebarOption Icon={Apps} title="Apps"/>
-      <SidebarOption Icon={FileCopy} title="File browser"/>
-      <SidebarOption Icon={ExpandLess} title="Show less"/>
+      <SidebarOption Icon={InsertComment} title="Threads" />
+      <SidebarOption Icon={Inbox} title="Mentions & reactions" />
+      <SidebarOption Icon={Drafts} title="Saved items" />
+      <SidebarOption Icon={BookmarkBorder} title="Channel browser" />
+      <SidebarOption Icon={PeopleAlt} title="People & user groups" />
+      <SidebarOption Icon={Apps} title="Apps" />
+      <SidebarOption Icon={FileCopy} title="File browser" />
+      <SidebarOption Icon={ExpandLess} title="Show less" />
       <hr />
-      <SidebarOption Icon={ExpandMore} title="Channels"/>
+      <SidebarOption Icon={ExpandMore} title="Channels" />
       <hr />
-      <SidebarOption Icon={Add} addChannelOption title="Add Channel"/>
+      <SidebarOption Icon={Add} addChannelOption title="Add Channel" />
+      {channels?.docs.map((doc) => (
+        <SidebarOption
+          key={doc.id}
+          id={doc.id} 
+          title={doc.data().name}
+        />
+      ))}
     </SidebarContainer>
   );
 }
@@ -42,10 +64,10 @@ const SidebarContainer = styled.div`
   border-top: 1px solid #49274b;
   max-width: 260px;
   margin-top: 60px;
-  >hr{
+  > hr {
     margin-top: 10px;
-     margin-bottom: 10px;
-     border: 1px solid #49274b;
+    margin-bottom: 10px;
+    border: 1px solid #49274b;
   }
 `;
 
@@ -79,10 +101,10 @@ const SidebarInfo = styled.div`
     align-items: center;
   }
 
-  > h3 > .MuiSvgIcon-root{
+  > h3 > .MuiSvgIcon-root {
     font-size: 14px;
     margin-top: 1px;
     margin-right: 2px;
-    color: green; 
+    color: green;
   }
 `;
