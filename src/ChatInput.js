@@ -1,16 +1,16 @@
 import { Button } from "@mui/material";
 import React from "react";
-import { useRef } from "react";
 import styled from "styled-components";
 import db from "./firebase";
 import firebase from "firebase/compat/app";
 import { useState } from "react";
 
-function ChatInput({ channelName, channelId }) {
-  const [input, setInput] = useState(null);
+function ChatInput({ channelName, channelId, roomId }) {
+  const [input, setInput] = useState("");
+
   const sendMessage = (e) => {
     e.preventDefault();
-    if (channelId) {
+    if (!channelId) {
       return false;
     }
     db.collection("rooms").doc(channelId).collection("messages").add({
@@ -25,8 +25,8 @@ function ChatInput({ channelName, channelId }) {
       <form>
         <input
           value={input}
-          onChange={(e) => e.target.value}
-          placeholder={`Message #ROOM`}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder={`Message #${channelName}`}
         />
         <Button hidden type="submit" onClick={sendMessage}>
           SEND
