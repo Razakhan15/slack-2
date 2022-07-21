@@ -16,10 +16,13 @@ import styled from "styled-components";
 import CreateIcon from "@mui/icons-material/Create";
 import { useCollection } from "react-firebase-hooks/firestore";
 import SidebarOption from "./SidebarOption";
-import db from "./firebase";
+import db, { auth } from "./firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 function Sidebar() {
   const [channels, loading, error] = useCollection(db.collection("rooms"));
+  const [user] = useAuthState(auth);
+
   return (
     <SidebarContainer>
       <SidebarHeader>
@@ -27,7 +30,7 @@ function Sidebar() {
           <h2>HQ</h2>
           <h3>
             <FiberManualRecord />
-            Raza Khan
+            {user?.displayName}
           </h3>
         </SidebarInfo>
         <CreateIcon />
@@ -45,11 +48,7 @@ function Sidebar() {
       <hr />
       <SidebarOption Icon={Add} addChannelOption title="Add Channel" />
       {channels?.docs.map((doc) => (
-        <SidebarOption
-          key={doc.id}
-          id={doc.id} 
-          title={doc.data().name}
-        />
+        <SidebarOption key={doc.id} id={doc.id} title={doc.data().name} />
       ))}
     </SidebarContainer>
   );
